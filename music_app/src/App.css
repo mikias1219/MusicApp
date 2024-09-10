@@ -1,0 +1,33 @@
+  /* Song.css */
+
+  .container {
+      max-width: 900px;
+  }
+
+  h2 {
+      font-family: 'Arial', sans-serif;
+  }
+
+  .table th,
+  .table td {
+      vertical-align: middle;
+  }
+
+  .btn-lg {
+      font-size: 1.25rem;
+      padding: 0.5rem 1rem;
+  }
+
+  .btn-sm {
+      font-size: 0.875rem;
+      padding: 0.25rem 0.5rem;
+  }
+
+  thead {
+      background-color: #343a40;
+      color: #fff;
+  }
+
+  .table-hover tbody tr:hover {
+      background-color: #f8f9fa;
+  }
