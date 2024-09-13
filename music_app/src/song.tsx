@@ -1,100 +1,143 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css'; // Optional: use this if you want to add custom styles
+import { RootState } from './store';
+import { deleteSong, fetchSongs } from './slices/songSlice'; // Ensure fetchSongs is imported
 import { Link } from 'react-router-dom';
+import styled from '@emotion/styled';
 
-interface SongType {
-    _id: string;
-    title: string;
-    artist: string;
-    album: string;
-    genre: string;
-}
+// Styled components
+const SongListContainer = styled.div`
+  margin-top: 5%;
+  padding: 20px;
+  background-color: #f4f4f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #007bff;
+    color: white;
+  }
+
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  button {
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .add-button {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .edit-button {
+    background-color: #ffc107;
+    color: black;
+  }
+
+  .delete-button {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  button:hover {
+    opacity: 0.8;
+  }
+
+  .link {
+    display: inline-block;
+    margin: 20px 0;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
+  }
+
+  .link:hover {
+    text-decoration: underline;
+  }
+`;
 
 const Song: React.FC = () => {
-    const navigate = useNavigate();
-    const [songs, setSongs] = useState<SongType[]>([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const songs = useSelector((state: RootState) => state.songs.songs);
 
-    useEffect(() => {
-        const fetchSongs = async () => {
-            try {
-                const response = await axios.get<SongType[]>('http://localhost:5000/songs');
-                setSongs(response.data);
-            } catch (error) {
-                console.error('Error fetching songs:', error);
-            }
-        };
+  useEffect(() => {
+    // Dispatch fetchSongs to load the list of songs from the backend
+    dispatch(fetchSongs());
+  }, [dispatch]);
 
-        fetchSongs();
-    }, []);
+  // Function to handle navigation to the "create song" page
+  const handleAddClick = () => {
+    navigate('/create');
+  };
 
-    const handleEditClick = (id: string) => {
-        navigate(`/update/${id}`);
-    };
+  // Function to navigate to the edit song page
+  const handleEditClick = (id: string) => {
+    navigate(`/update/${id}`);
+  };
 
-    const handleDeleteClick = async (id: string) => {
-        try {
-            await axios.delete(`http://localhost:5000/songs/${id}`);
-            setSongs(songs.filter(song => song._id !== id));
-        } catch (error) {
-            console.error('Error deleting song:', error);
-        }
-    };
+  // Function to handle deleting a song
+  const handleDeleteClick = (id: string) => {
+    dispatch(deleteSong(id));
+  };
 
-    const handleAddClick = () => {
-        navigate('/create');
-    };
-
-    return (
-        <div className="container mt-5">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="text-primary">Song List</h2>
-                <button className="btn btn-success btn-lg" onClick={handleAddClick}>
-                    + Add Song
-                </button>
-                <Link to="/statistics" className="btn btn-info mb-3">View Statistics</Link>
-            </div>
-            <div className="table-responsive">
-                <table className="table table-bordered table-hover">
-                    <thead className="thead-dark">
-                        <tr>
-                            <th>Title</th>
-                            <th>Artist</th>
-                            <th>Album</th>
-                            <th>Genre</th>
-                            <th className="text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {songs.map((song) => (
-                            <tr key={song._id} className="align-middle">
-                                <td>{song.title}</td>
-                                <td>{song.artist}</td>
-                                <td>{song.album}</td>
-                                <td>{song.genre}</td>
-                                <td className="text-center">
-                                    <button
-                                        className="btn btn-warning btn-sm me-2"
-                                        onClick={() => handleEditClick(song._id)}
-                                    >
-                                        <i className="bi bi-pencil-square"></i> Edit
-                                    </button>
-                                    <button
-                                        className="btn btn-danger btn-sm"
-                                        onClick={() => handleDeleteClick(song._id)}
-                                    >
-                                        <i className="bi bi-trash"></i> Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
+  return (
+    <SongListContainer>
+      <h2 className="text-primary">Song List</h2>
+      <button className="add-button" onClick={handleAddClick}>+ Add Song</button>
+      <Link to="/statistics" className="link">View Statistics</Link>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Genre</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {songs.map((song) => (
+            <tr key={song._id}>
+              <td>{song.title}</td>
+              <td>{song.artist}</td>
+              <td>{song.album}</td>
+              <td>{song.genre}</td>
+              <td className="actions">
+                <button className="edit-button" onClick={() => handleEditClick(song._id)}>Edit</button>
+                <button className="delete-button" onClick={() => handleDeleteClick(song._id)}>Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </SongListContainer>
+  );
 };
 
 export default Song;
