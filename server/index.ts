@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
-import cors from 'cors';
+import cors from  'cors';
 import dotenv from 'dotenv';
 import Song from './model/song'; // Import the Song model
 
@@ -11,7 +11,9 @@ dotenv.config();
 const app = express();
 
 // Use CORS middleware to enable CORS
-app.use(cors());
+app.use(cors({
+  origin: '*', // or specify allowed origins
+}));
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -22,9 +24,11 @@ app.post('/createsong', async (req: Request, res: Response) => {
         const newSong = await Song.create(req.body);
         res.status(201).json(newSong);
     } catch (err: any) {
-        res.status(500).json({ error: err.message });
+        console.error('Error creating song:', err); // More detailed logging
+        res.status(500).json({ error: 'Failed to create song' }); // Generic error message
     }
 });
+
 
 // GET route to fetch all songs
 app.get('/songs', async (req: Request, res: Response) => {
