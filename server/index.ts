@@ -144,7 +144,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/test")
+mongoose.connect(process.env.MONGO_URI || "mongodb+srv://mikias:miki1219@cluster0.8pmom.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     .then(() => console.log('MongoDB connected'))
     .catch((err) => console.error('MongoDB connection error:', err));
 
