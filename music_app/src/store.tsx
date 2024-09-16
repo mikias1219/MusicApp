@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 import { all } from 'redux-saga/effects';
-import songReducer from './slices/songSlice';
+import songReducer from './slices/songSlice'; // Ensure this is the correct import path
 import { songSaga } from './saga/songSaga';
 
 // Create the Saga middleware
@@ -15,7 +15,7 @@ function* rootSaga() {
 // Configure the store with the reducer and middleware
 const store = configureStore({
   reducer: {
-    songs: songReducer,
+    songs: songReducer,  // Ensure you are passing the reducer correctly
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),

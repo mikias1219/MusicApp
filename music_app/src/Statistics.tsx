@@ -25,7 +25,7 @@ const Statistics: React.FC = () => {
     useEffect(() => {
         const fetchStatistics = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/statistics');
+                const response = await axios.get('https://musicapp-3.onrender.com/statistics');
                 setStatistics(response.data);
             } catch (error) {
                 console.error("Error fetching statistics:", error);
