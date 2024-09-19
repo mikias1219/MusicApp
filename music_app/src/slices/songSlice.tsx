@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
+interface NewSongType {
+  title: string;
+  artist: string;
+  album: string;
+  genre: string;
+}
 interface SongType {
   _id: string;
   title: string;
@@ -36,7 +41,7 @@ const songSlice = createSlice({
     setSongs: (state, action: PayloadAction<SongType[]>) => {
       state.songs = action.payload;
     },
-    addSongRequest: (state, _action: PayloadAction<SongType>) => state,
+     addSongRequest: (state, _action: PayloadAction<NewSongType>) => state,
     addSongSuccess: (state, action: PayloadAction<SongType>) => {
       state.songs.push(action.payload);
     },
