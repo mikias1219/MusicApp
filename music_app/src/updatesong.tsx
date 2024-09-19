@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { RootState } from './store';
-import { updateSong } from './slices/songSlice';
+import { updateSongRequest } from './slices/songSlice';
 import {
   FormContainer,
   FormTitle,
@@ -11,7 +11,7 @@ import {
   FormInput,
   FormSelect,
   Button,
-} from './StyledComponents'; // Import the styles
+} from './StyledComponents';
 
 const UpdateSong: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -37,7 +37,7 @@ const UpdateSong: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(updateSong({ _id: id!, title, artist, album, genre }));
+    dispatch(updateSongRequest({ _id: id!, title, artist, album, genre }));
     navigate('/');
   };
 

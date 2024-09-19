@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { RootState } from './store';
-import { deleteSong, fetchSongs } from './slices/songSlice';
+import { deleteSongRequest, fetchSongs } from './slices/songSlice'; // Use request actions for Sagas
 import { Link } from 'react-router-dom';
 import { FiPlus, FiEdit, FiTrash2, FiBarChart2, FiPlay } from 'react-icons/fi';
 import axios from 'axios';
@@ -17,8 +17,9 @@ const Song: React.FC = () => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<string>('');
 
+  // Fetch the songs using Redux Saga
   useEffect(() => {
-    dispatch(fetchSongs());
+    dispatch(fetchSongs()); // Dispatch request action for fetching songs
   }, [dispatch]);
 
   const fetchYouTubeVideo = async (title: string) => {
@@ -48,8 +49,9 @@ const Song: React.FC = () => {
     navigate(`/update/${id}`);
   };
 
+  // Delete the song using Redux Saga
   const handleDeleteClick = (id: string) => {
-    dispatch(deleteSong(id));
+    dispatch(deleteSongRequest(id)); // Dispatch delete request action for Sagas
   };
 
   const handlePlayClick = (title: string) => {

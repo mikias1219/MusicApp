@@ -1,40 +1,32 @@
-// src/components/CreateSong.tsx
-
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { 
-  FormContainer, 
-  FormTitle, 
-  FormGroup, 
-  FormLabel, 
-  FormInput, 
-  FormSelect, 
-  Button 
-} from './StyledComponents';  // Import from your new file
+import { addSongRequest } from './slices/songSlice';  // Updated action for saga
+import {
+  FormContainer,
+  FormTitle,
+  FormGroup,
+  FormLabel,
+  FormInput,
+  FormSelect,
+  Button,
+} from './StyledComponents';
 
 const CreateSong: React.FC = () => {
-  const [title, setTitle] = useState<string>('');
-  const [artist, setArtist] = useState<string>('');
-  const [album, setAlbum] = useState<string>('');
-  const [genre, setGenre] = useState<string>('Pop');
+  const [title, setTitle] = useState('');
+  const [artist, setArtist] = useState('');
+  const [album, setAlbum] = useState('');
+  const [genre, setGenre] = useState('Pop');
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newSong = { title, artist, album, genre };
-
-    try {
-      await axios.post('https://musicapp-3.onrender.com/createsong', newSong);
-      navigate('/');  // Redirect to the homepage or songs list
-    } catch (error) {
-      console.error('There was an error creating the song:', error);
-    }
-  };
-
-  const handleBackToHome = () => {
+    dispatch(addSongRequest({
+      title, artist, album, genre
+    }));
     navigate('/');
-  };
+};
 
   return (
     <FormContainer>
@@ -85,7 +77,7 @@ const CreateSong: React.FC = () => {
           </FormSelect>
         </FormGroup>
         <Button type="submit">Add Song</Button>
-        <Button type="button" onClick={handleBackToHome}>Back to Home</Button>
+        <Button type="button" onClick={() => navigate('/')}>Back to Home</Button>
       </form>
     </FormContainer>
   );

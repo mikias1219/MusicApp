@@ -8,12 +8,24 @@ interface SongType {
   genre: string;
 }
 
+interface StatisticsType {
+  totalSongs: number;
+  totalArtists: number;
+  totalAlbums: number;
+  totalGenres: number;
+  songsPerGenre: { _id: string; count: number }[];
+  songsAndAlbumsPerArtist: { artist: string; songCount: number; albumCount: number }[];
+  songsPerAlbum: { _id: string; count: number }[];
+}
+
 interface SongState {
   songs: SongType[];
+  statistics: StatisticsType | null;
 }
 
 const initialState: SongState = {
   songs: [],
+  statistics: null,
 };
 
 const songSlice = createSlice({
@@ -24,21 +36,39 @@ const songSlice = createSlice({
     setSongs: (state, action: PayloadAction<SongType[]>) => {
       state.songs = action.payload;
     },
-    addSong: (state, action: PayloadAction<SongType>) => {
+    addSongRequest: (state, _action: PayloadAction<SongType>) => state,
+    addSongSuccess: (state, action: PayloadAction<SongType>) => {
       state.songs.push(action.payload);
     },
-    updateSong: (state, action: PayloadAction<SongType>) => {
+    updateSongRequest: (state, _action: PayloadAction<SongType>) => state,
+    updateSongSuccess: (state, action: PayloadAction<SongType>) => {
       const index = state.songs.findIndex(song => song._id === action.payload._id);
       if (index !== -1) {
         state.songs[index] = action.payload;
       }
     },
-    deleteSong: (state, action: PayloadAction<string>) => {
+    deleteSongRequest: (state, _action: PayloadAction<string>) => state,
+    deleteSongSuccess: (state, action: PayloadAction<string>) => {
       state.songs = state.songs.filter(song => song._id !== action.payload);
+    },
+    fetchStatistics: (state) => state,
+    setStatistics: (state, action: PayloadAction<StatisticsType>) => {
+      state.statistics = action.payload;
     },
   },
 });
 
-export const { setSongs, addSong, updateSong, deleteSong ,fetchSongs} = songSlice.actions;
+export const {
+  fetchSongs,
+  setSongs,
+  addSongRequest,
+  addSongSuccess,
+  updateSongRequest,
+  updateSongSuccess,
+  deleteSongRequest,
+  deleteSongSuccess,
+  fetchStatistics,
+  setStatistics,
+} = songSlice.actions;
 
 export default songSlice.reducer;
